@@ -14,9 +14,10 @@ import destino.*;
 public class Compilador{
   //public static LinkedList<TipoReferencia> macros;
   public static ListaMacros macros = new ListaMacros();
+  public static ListaTipos tipos = new ListaTipos();
     public static void main(String args []) throws ParseException  {
     try{		Compilador compilador = new Compilador(new FileInputStream("entrada.txt"));	    while (true)	    {	      	System.out.println("Reading from standard input...");
-	      	compilador.inicio();
+	      	compilador.inicio(macros,tipos);
 	      	System.out.println(macros.toString());
 	      	LinguagemDestino.geraCodigoDestino("saida");
 	      	break;	    }
@@ -37,19 +38,21 @@ public class Compilador{
 | < PROP : < LASTNAME >|< UPPERCASE >|< CAPITALIZED >|< DATA >|< PONTUACAO > >
 | < ENDLINE : "$" >}
 
-void inicio(): { }
+void inicio(ListaMacros macros,ListaTipos tipos): { Macro macro = null;Tipo tipo = null; }
 {
   	(
   	  macro = macros()
   	  {
-  	    compilador.macros.insere(macro);
+  	    macros.insere(macro);
   	  }  	)+
   	< ENDLINE >
   	(
-  	  < TYPE > < ATRIB > < TYPE_ESCOLHIDO > < ENDLINE >
-  	  < PROP > (< VIRG > < PROP >)*  	)+
-  	< EOF >
-  	{ return listaTipos; }}
+  	  tipo = tipos()
+  	  {
+  	    tipos.insere(tipo);
+  	  }
+  	)+
+  	< EOF >}
 
 Macro macros(): {Macro macros = new Macro();Token nome = null;Token prop = null;}
 {
@@ -75,36 +78,26 @@ Macro macros(): {Macro macros = new Macro();Token nome = null;Token prop = null;
 	}
 }
 
-ListaLinhas linha(): { ListaLinhas linha = new ListaLinhas(); Token elemento = null; Linha linhaAux = new Linha();}
-{	(
-		elemento = < DESCRITOR >
-		{
-		  linhaAux = new Linha();
-		  linhaAux.insere(elemento.image);
-		  
-		}
-		<ATRIB >
-		elemento = < PROP >
-		{
-		 
-		  linhaAux.insere(elemento.image);
-		  
-		}
-		(
-		  	< VIRG >
-		  	elemento = < PROP >
-			{
-			  
-			  linhaAux.insere(elemento.image);
-			  
-			}
-		)*
-		{
-		  linha.insere(linhaAux);
-		}
-		< ENDLINE >
-	)+
+Tipo tipos(): {Tipo tipos = new Tipo();Token nome = null;Token prop = null;}
+{
+	nome = < TYPE >
 	{
-	  return linha;
+	  	tipos.setNome(nome.image);
+	}
+	< ATRIB >
+	prop = < PROP >
+	{
+	  	tipos.insere(prop.image);
+	}
+	(
+	  	< VIRG >
+		prop = < PROP >
+		{
+		  tipos.insere(prop.image);
+		}
+	)*
+	< ENDLINE >
+	{
+	  return tipos;
 	}
 }

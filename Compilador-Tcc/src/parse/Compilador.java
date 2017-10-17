@@ -8,6 +8,7 @@ import destino.*;
 public class Compilador implements CompiladorConstants {
   //public static LinkedList<TipoReferencia> macros;
   public static ListaMacros macros = new ListaMacros();
+  public static ListaTipos tipos = new ListaTipos();
 
   public static void main(String args []) throws ParseException
   {
@@ -16,7 +17,7 @@ public class Compilador implements CompiladorConstants {
             while (true)
             {
                 System.out.println("Reading from standard input...");
-                compilador.inicio();
+                compilador.inicio(macros,tipos);
                 System.out.println(macros.toString());
                 LinguagemDestino.geraCodigoDestino("saida");
                 break;
@@ -26,11 +27,12 @@ public class Compilador implements CompiladorConstants {
     }
   }
 
-  static final public void inicio() throws ParseException {
+  static final public void inicio(ListaMacros macros,ListaTipos tipos) throws ParseException {
+                                                    Macro macro = null;Tipo tipo = null;
     label_1:
     while (true) {
       macro = macros();
-            compilador.macros.insere(macro);
+            macros.insere(macro);
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case MACRO:
         ;
@@ -43,35 +45,18 @@ public class Compilador implements CompiladorConstants {
     jj_consume_token(ENDLINE);
     label_2:
     while (true) {
-      jj_consume_token(TYPE);
-      jj_consume_token(ATRIB);
-      jj_consume_token(TYPE_ESCOLHIDO);
-      jj_consume_token(ENDLINE);
-      jj_consume_token(PROP);
-      label_3:
-      while (true) {
-        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-        case VIRG:
-          ;
-          break;
-        default:
-          jj_la1[1] = jj_gen;
-          break label_3;
-        }
-        jj_consume_token(VIRG);
-        jj_consume_token(PROP);
-      }
+      tipo = tipos();
+            tipos.insere(tipo);
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case TYPE:
         ;
         break;
       default:
-        jj_la1[2] = jj_gen;
+        jj_la1[1] = jj_gen;
         break label_2;
       }
     }
     jj_consume_token(0);
-          {if (true) return listaTipos;}
   }
 
   static final public Macro macros() throws ParseException {
@@ -81,6 +66,32 @@ public class Compilador implements CompiladorConstants {
     jj_consume_token(ATRIB);
     prop = jj_consume_token(PROP);
                 macros.insere(prop.image);
+    label_3:
+    while (true) {
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case VIRG:
+        ;
+        break;
+      default:
+        jj_la1[2] = jj_gen;
+        break label_3;
+      }
+      jj_consume_token(VIRG);
+      prop = jj_consume_token(PROP);
+                  macros.insere(prop.image);
+    }
+    jj_consume_token(ENDLINE);
+          {if (true) return macros;}
+    throw new Error("Missing return statement in function");
+  }
+
+  static final public Tipo tipos() throws ParseException {
+               Tipo tipos = new Tipo();Token nome = null;Token prop = null;
+    nome = jj_consume_token(TYPE);
+                tipos.setNome(nome.image);
+    jj_consume_token(ATRIB);
+    prop = jj_consume_token(PROP);
+                tipos.insere(prop.image);
     label_4:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -93,49 +104,10 @@ public class Compilador implements CompiladorConstants {
       }
       jj_consume_token(VIRG);
       prop = jj_consume_token(PROP);
-                  macros.insere(prop.image);
+                  tipos.insere(prop.image);
     }
     jj_consume_token(ENDLINE);
-          {if (true) return macros;}
-    throw new Error("Missing return statement in function");
-  }
-
-  static final public ListaLinhas linha() throws ParseException {
-                       ListaLinhas linha = new ListaLinhas(); Token elemento = null; Linha linhaAux = new Linha();
-    label_5:
-    while (true) {
-      elemento = jj_consume_token(DESCRITOR);
-                  linhaAux = new Linha();
-                  linhaAux.insere(elemento.image);
-      jj_consume_token(ATRIB);
-      elemento = jj_consume_token(PROP);
-                  linhaAux.insere(elemento.image);
-      label_6:
-      while (true) {
-        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-        case VIRG:
-          ;
-          break;
-        default:
-          jj_la1[4] = jj_gen;
-          break label_6;
-        }
-        jj_consume_token(VIRG);
-        elemento = jj_consume_token(PROP);
-                          linhaAux.insere(elemento.image);
-      }
-                  linha.insere(linhaAux);
-      jj_consume_token(ENDLINE);
-      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case DESCRITOR:
-        ;
-        break;
-      default:
-        jj_la1[5] = jj_gen;
-        break label_5;
-      }
-    }
-          {if (true) return linha;}
+          {if (true) return tipos;}
     throw new Error("Missing return statement in function");
   }
 
@@ -149,13 +121,13 @@ public class Compilador implements CompiladorConstants {
   static public Token jj_nt;
   static private int jj_ntk;
   static private int jj_gen;
-  static final private int[] jj_la1 = new int[6];
+  static final private int[] jj_la1 = new int[4];
   static private int[] jj_la1_0;
   static {
       jj_la1_init_0();
    }
    private static void jj_la1_init_0() {
-      jj_la1_0 = new int[] {0x40,0x400,0x20,0x400,0x400,0x200,};
+      jj_la1_0 = new int[] {0x40,0x20,0x400,0x400,};
    }
 
   /** Constructor with InputStream. */
@@ -176,7 +148,7 @@ public class Compilador implements CompiladorConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 6; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 4; i++) jj_la1[i] = -1;
   }
 
   /** Reinitialise. */
@@ -190,7 +162,7 @@ public class Compilador implements CompiladorConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 6; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 4; i++) jj_la1[i] = -1;
   }
 
   /** Constructor. */
@@ -207,7 +179,7 @@ public class Compilador implements CompiladorConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 6; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 4; i++) jj_la1[i] = -1;
   }
 
   /** Reinitialise. */
@@ -217,7 +189,7 @@ public class Compilador implements CompiladorConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 6; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 4; i++) jj_la1[i] = -1;
   }
 
   /** Constructor with generated Token Manager. */
@@ -233,7 +205,7 @@ public class Compilador implements CompiladorConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 6; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 4; i++) jj_la1[i] = -1;
   }
 
   /** Reinitialise. */
@@ -242,7 +214,7 @@ public class Compilador implements CompiladorConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 6; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 4; i++) jj_la1[i] = -1;
   }
 
   static private Token jj_consume_token(int kind) throws ParseException {
@@ -298,7 +270,7 @@ public class Compilador implements CompiladorConstants {
       la1tokens[jj_kind] = true;
       jj_kind = -1;
     }
-    for (int i = 0; i < 6; i++) {
+    for (int i = 0; i < 4; i++) {
       if (jj_la1[i] == jj_gen) {
         for (int j = 0; j < 32; j++) {
           if ((jj_la1_0[i] & (1<<j)) != 0) {
