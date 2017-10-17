@@ -6,7 +6,8 @@ import java.util.LinkedList;
 import classes.*;
 import destino.*;
 public class Compilador implements CompiladorConstants {
-  public static LinkedList<TipoReferencia> macros;
+  //public static LinkedList<TipoReferencia> macros;
+  public static ListaMacros macros = new ListaMacros();
 
   public static void main(String args []) throws ParseException
   {
@@ -15,7 +16,7 @@ public class Compilador implements CompiladorConstants {
             while (true)
             {
                 System.out.println("Reading from standard input...");
-                Compilador.macros = compilador.inicio();
+                compilador.inicio();
                 System.out.println(macros.toString());
                 LinguagemDestino.geraCodigoDestino("saida");
                 break;
@@ -25,18 +26,11 @@ public class Compilador implements CompiladorConstants {
     }
   }
 
-  static final public LinkedList<TipoReferencia> inicio() throws ParseException {
-                                        LinkedList<TipoReferencia> listaTipos = new LinkedList<TipoReferencia>();
-                                                                ListaLinhas listaLinhas = new ListaLinhas();Token nome = null;
+  static final public void inicio() throws ParseException {
     label_1:
     while (true) {
-      jj_consume_token(MACRO);
-      jj_consume_token(ATRIB);
-      nome = jj_consume_token(TYPE_ESCOLHIDO);
-      jj_consume_token(ENDLINE);
-      listaLinhas = linha();
-                  TipoReferencia tipo = new TipoReferencia(nome.image,listaLinhas);
-                  listaTipos.add(tipo);
+      macro = macros();
+            compilador.macros.insere(macro);
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case MACRO:
         ;
@@ -46,36 +40,23 @@ public class Compilador implements CompiladorConstants {
         break label_1;
       }
     }
-    label_2:
-    while (true) {
-      macro = macros();
-            listaMacros.insere(macro);
-      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case MACRO:
-        ;
-        break;
-      default:
-        jj_la1[1] = jj_gen;
-        break label_2;
-      }
-    }
     jj_consume_token(ENDLINE);
-    label_3:
+    label_2:
     while (true) {
       jj_consume_token(TYPE);
       jj_consume_token(ATRIB);
       jj_consume_token(TYPE_ESCOLHIDO);
       jj_consume_token(ENDLINE);
       jj_consume_token(PROP);
-      label_4:
+      label_3:
       while (true) {
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case VIRG:
           ;
           break;
         default:
-          jj_la1[2] = jj_gen;
-          break label_4;
+          jj_la1[1] = jj_gen;
+          break label_3;
         }
         jj_consume_token(VIRG);
         jj_consume_token(PROP);
@@ -85,13 +66,12 @@ public class Compilador implements CompiladorConstants {
         ;
         break;
       default:
-        jj_la1[3] = jj_gen;
-        break label_3;
+        jj_la1[2] = jj_gen;
+        break label_2;
       }
     }
     jj_consume_token(0);
           {if (true) return listaTipos;}
-    throw new Error("Missing return statement in function");
   }
 
   static final public Macro macros() throws ParseException {
@@ -101,27 +81,28 @@ public class Compilador implements CompiladorConstants {
     jj_consume_token(ATRIB);
     prop = jj_consume_token(PROP);
                 macros.insere(prop.image);
-    label_5:
+    label_4:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case VIRG:
         ;
         break;
       default:
-        jj_la1[4] = jj_gen;
-        break label_5;
+        jj_la1[3] = jj_gen;
+        break label_4;
       }
       jj_consume_token(VIRG);
       prop = jj_consume_token(PROP);
                   macros.insere(prop.image);
     }
+    jj_consume_token(ENDLINE);
           {if (true) return macros;}
     throw new Error("Missing return statement in function");
   }
 
   static final public ListaLinhas linha() throws ParseException {
                        ListaLinhas linha = new ListaLinhas(); Token elemento = null; Linha linhaAux = new Linha();
-    label_6:
+    label_5:
     while (true) {
       elemento = jj_consume_token(DESCRITOR);
                   linhaAux = new Linha();
@@ -129,15 +110,15 @@ public class Compilador implements CompiladorConstants {
       jj_consume_token(ATRIB);
       elemento = jj_consume_token(PROP);
                   linhaAux.insere(elemento.image);
-      label_7:
+      label_6:
       while (true) {
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case VIRG:
           ;
           break;
         default:
-          jj_la1[5] = jj_gen;
-          break label_7;
+          jj_la1[4] = jj_gen;
+          break label_6;
         }
         jj_consume_token(VIRG);
         elemento = jj_consume_token(PROP);
@@ -150,8 +131,8 @@ public class Compilador implements CompiladorConstants {
         ;
         break;
       default:
-        jj_la1[6] = jj_gen;
-        break label_6;
+        jj_la1[5] = jj_gen;
+        break label_5;
       }
     }
           {if (true) return linha;}
@@ -168,13 +149,13 @@ public class Compilador implements CompiladorConstants {
   static public Token jj_nt;
   static private int jj_ntk;
   static private int jj_gen;
-  static final private int[] jj_la1 = new int[7];
+  static final private int[] jj_la1 = new int[6];
   static private int[] jj_la1_0;
   static {
       jj_la1_init_0();
    }
    private static void jj_la1_init_0() {
-      jj_la1_0 = new int[] {0x40,0x40,0x400,0x20,0x400,0x400,0x200,};
+      jj_la1_0 = new int[] {0x40,0x400,0x20,0x400,0x400,0x200,};
    }
 
   /** Constructor with InputStream. */
@@ -195,7 +176,7 @@ public class Compilador implements CompiladorConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 7; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 6; i++) jj_la1[i] = -1;
   }
 
   /** Reinitialise. */
@@ -209,7 +190,7 @@ public class Compilador implements CompiladorConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 7; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 6; i++) jj_la1[i] = -1;
   }
 
   /** Constructor. */
@@ -226,7 +207,7 @@ public class Compilador implements CompiladorConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 7; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 6; i++) jj_la1[i] = -1;
   }
 
   /** Reinitialise. */
@@ -236,7 +217,7 @@ public class Compilador implements CompiladorConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 7; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 6; i++) jj_la1[i] = -1;
   }
 
   /** Constructor with generated Token Manager. */
@@ -252,7 +233,7 @@ public class Compilador implements CompiladorConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 7; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 6; i++) jj_la1[i] = -1;
   }
 
   /** Reinitialise. */
@@ -261,7 +242,7 @@ public class Compilador implements CompiladorConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 7; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 6; i++) jj_la1[i] = -1;
   }
 
   static private Token jj_consume_token(int kind) throws ParseException {
@@ -317,7 +298,7 @@ public class Compilador implements CompiladorConstants {
       la1tokens[jj_kind] = true;
       jj_kind = -1;
     }
-    for (int i = 0; i < 7; i++) {
+    for (int i = 0; i < 6; i++) {
       if (jj_la1[i] == jj_gen) {
         for (int j = 0; j < 32; j++) {
           if ((jj_la1_0[i] & (1<<j)) != 0) {
