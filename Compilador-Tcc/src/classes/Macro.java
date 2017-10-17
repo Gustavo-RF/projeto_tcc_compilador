@@ -30,4 +30,64 @@ public class Macro {
 	public void insere(String prop){
 		this.props.add(prop);
 	}
+	@Override
+	public String toString(){
+		return this.nome+": "+this.props.toString()+"\n";
+	}
+	
+	public String arquivoDestino(){
+		return this.verificaMacro();
+	}
+	
+	public String verificaMacro(){
+		if(this.nome.contains("Author")){
+			return "<macro name='author'>"+
+		    "<names variable='author'>"+
+		      "<name name-as-sort-order='all' sort-separator=', ' initialize-with='. ' delimiter='; ' delimiter-precedes-last='always'>"+
+		        "<name-part name='family' text-case='uppercase'/>"+
+		        "<name-part name='given' text-case='capitalize-all'/>"+
+		      "</name>"+
+		      "<et-al font-style='italic'/>"+
+		      "<label form='short' prefix=' (' suffix='.)' text-case='capitalize-first'/>"+
+		      "<substitute>"+
+		        "<names variable='editor'/>"+
+		        "<names variable='translator'/>"+
+		        "<choose>"+
+		          "<if match='none' type='motion_picture broadcast'>"+
+		            "<text macro='title'/>"+
+		          "</if>"+
+		        "</choose>"+
+		      "</substitute>"+
+		    "</names>"+
+		  "</macro>";
+		}
+		else if(this.nome.contains("Title")){
+			return "<macro name='title'>"+
+		    "<choose>"+
+		      "<if match='any' type='chapter bill webpage post-weblog article-newspaper article-magazine    article-journal motion_picture paper-conference speech'>"+
+		        "<text variable='title'/>"+
+		      "</if>"+
+		      "<else-if match='any' type='entry-encyclopedia entry-dictionary'>"+
+		        "<choose>"+
+		          "<if match='any' variable='author editor collection-editor translator'>"+
+		            "<text variable='title'/>"+
+		          "</if>"+
+		          "<else>"+
+		            "<text variable='title' text-case='uppercase'/>"+
+		          "</else>"+
+		        "</choose>"+
+		      "</else-if>"+
+		      "<else>"+
+		        "<text variable='title' font-weight='bold'/>"+
+		      "</else>"+
+		    "</choose>"+
+		  "</macro>";
+		}
+		else return "";
+		/*Iterator<String> i = this.props.iterator(); //cria um objeto Iterator da sua LinkedList
+		  while (i.hasNext()) { //percorrer toda a lista até o ultimo elemento
+		  System.out.println(i.next()); //Mostra o valor da Lista
+		}
+		return "";*/
+	}
 }

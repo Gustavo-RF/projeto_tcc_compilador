@@ -12,23 +12,21 @@ import java.util.LinkedList;
 import classes.*;
 import destino.*;
 public class Compilador{
-  //public static LinkedList<TipoReferencia> macros;
   public static ListaMacros macros = new ListaMacros();
   public static ListaTipos tipos = new ListaTipos();
     public static void main(String args []) throws ParseException  {
     try{		Compilador compilador = new Compilador(new FileInputStream("entrada.txt"));	    while (true)	    {	      	System.out.println("Reading from standard input...");
 	      	compilador.inicio(macros,tipos);
-	      	System.out.println(macros.toString());
 	      	LinguagemDestino.geraCodigoDestino("saida");
 	      	break;	    }
 	}catch(FileNotFoundException e){
         System.out.println("Erro: arquivo nao encontrado!\n");
     }  }}PARSER_END(Compilador)SKIP :{  " "| "\r"| "\t"| "\n"}TOKEN :{
   < TYPE : "type" >
-| < MACRO : "macro" >
 | < ATRIB : ":" >
 | < TYPE_ESCOLHIDO : "Artigo" >
 | < DESCRITOR : "Author"|"Title"|"Date"|"Place"|"Pontuation" >
+| < DESCRITOR_MIN : "author"|"title"|"date"|"place"|"pontuation" >
 | < VIRG : "," >
 | < #PONTUACAO : ","|";"|":" >
 | < #LASTNAME : "lastName" >
@@ -56,7 +54,7 @@ void inicio(ListaMacros macros,ListaTipos tipos): { Macro macro = null;Tipo tipo
 
 Macro macros(): {Macro macros = new Macro();Token nome = null;Token prop = null;}
 {
-	nome = < MACRO >
+	nome = < DESCRITOR >
 	{
 	  	macros.setNome(nome.image);
 	}
@@ -80,18 +78,19 @@ Macro macros(): {Macro macros = new Macro();Token nome = null;Token prop = null;
 
 Tipo tipos(): {Tipo tipos = new Tipo();Token nome = null;Token prop = null;}
 {
-	nome = < TYPE >
+  	< TYPE > < ATRIB >
+	nome = < TYPE_ESCOLHIDO >
 	{
 	  	tipos.setNome(nome.image);
 	}
-	< ATRIB >
-	prop = < PROP >
+	< ENDLINE >
+	prop = < DESCRITOR_MIN >
 	{
 	  	tipos.insere(prop.image);
 	}
 	(
 	  	< VIRG >
-		prop = < PROP >
+		prop = < DESCRITOR_MIN >
 		{
 		  tipos.insere(prop.image);
 		}

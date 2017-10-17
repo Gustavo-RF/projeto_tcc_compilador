@@ -27,4 +27,9 @@ public class Tipo {
 	public void insere(String tipo){
 		this.props.add(tipo);
 	}
+	
+	@Override
+	public String toString(){
+		return this.nome+": "+this.props.toString()+"\n";
+	}
 }

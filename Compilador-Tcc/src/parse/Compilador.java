@@ -6,7 +6,6 @@ import java.util.LinkedList;
 import classes.*;
 import destino.*;
 public class Compilador implements CompiladorConstants {
-  //public static LinkedList<TipoReferencia> macros;
   public static ListaMacros macros = new ListaMacros();
   public static ListaTipos tipos = new ListaTipos();
 
@@ -18,7 +17,6 @@ public class Compilador implements CompiladorConstants {
             {
                 System.out.println("Reading from standard input...");
                 compilador.inicio(macros,tipos);
-                System.out.println(macros.toString());
                 LinguagemDestino.geraCodigoDestino("saida");
                 break;
             }
@@ -34,7 +32,7 @@ public class Compilador implements CompiladorConstants {
       macro = macros();
             macros.insere(macro);
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case MACRO:
+      case DESCRITOR:
         ;
         break;
       default:
@@ -61,7 +59,7 @@ public class Compilador implements CompiladorConstants {
 
   static final public Macro macros() throws ParseException {
                  Macro macros = new Macro();Token nome = null;Token prop = null;
-    nome = jj_consume_token(MACRO);
+    nome = jj_consume_token(DESCRITOR);
                 macros.setNome(nome.image);
     jj_consume_token(ATRIB);
     prop = jj_consume_token(PROP);
@@ -87,10 +85,12 @@ public class Compilador implements CompiladorConstants {
 
   static final public Tipo tipos() throws ParseException {
                Tipo tipos = new Tipo();Token nome = null;Token prop = null;
-    nome = jj_consume_token(TYPE);
-                tipos.setNome(nome.image);
+    jj_consume_token(TYPE);
     jj_consume_token(ATRIB);
-    prop = jj_consume_token(PROP);
+    nome = jj_consume_token(TYPE_ESCOLHIDO);
+                tipos.setNome(nome.image);
+    jj_consume_token(ENDLINE);
+    prop = jj_consume_token(DESCRITOR_MIN);
                 tipos.insere(prop.image);
     label_4:
     while (true) {
@@ -103,7 +103,7 @@ public class Compilador implements CompiladorConstants {
         break label_4;
       }
       jj_consume_token(VIRG);
-      prop = jj_consume_token(PROP);
+      prop = jj_consume_token(DESCRITOR_MIN);
                   tipos.insere(prop.image);
     }
     jj_consume_token(ENDLINE);
@@ -127,7 +127,7 @@ public class Compilador implements CompiladorConstants {
       jj_la1_init_0();
    }
    private static void jj_la1_init_0() {
-      jj_la1_0 = new int[] {0x40,0x20,0x400,0x400,};
+      jj_la1_0 = new int[] {0x100,0x20,0x400,0x400,};
    }
 
   /** Constructor with InputStream. */

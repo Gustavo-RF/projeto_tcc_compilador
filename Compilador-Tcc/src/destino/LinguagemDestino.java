@@ -3,12 +3,14 @@ package destino;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Iterator;
 import java.util.LinkedList;
 
-import classes.Linha;
-import classes.ListaLinhas;
-import classes.TipoReferencia;
+import classes.Macro;
 import parse.Compilador;
+import classes.*;
+
+import parse.*;
 
 public class LinguagemDestino {
 	
@@ -48,6 +50,8 @@ public class LinguagemDestino {
             arqSaida.write("</term>\r\n");
             arqSaida.write("</terms>\r\n");
             arqSaida.write("</locale>\r\n");
+            //Macros
+            arqSaida.write(processaMacros(Compilador.macros));
             arqSaida.write("<citation et-al-min='4' et-al-use-first='1' et-al-subsequent-min='4' et-al-subsequent-use-first='1' collapse='year' disambiguate-add-year-suffix='true' disambiguate-add-names='true' disambiguate-add-givenname='true' givenname-disambiguation-rule='all-names'>\r\n");
             arqSaida.write("<sort>\r\n");
             arqSaida.write("<key macro='author'/>\r\n");
@@ -62,6 +66,7 @@ public class LinguagemDestino {
             arqSaida.write("</layout>\r\n");
             arqSaida.write("</citation>\r\n");
             arqSaida.write("<bibliography hanging-indent='false' et-al-min='4' et-al-use-first='1' entry-spacing='1' subsequent-author-substitute='______' subsequent-author-substitute-rule='partial-each'>\r\n");
+            //Tipos
             arqSaida.write("</bibliography>\r\n");
             arqSaida.write("</style>\r\n");
             /*arqSaida.write(".limit locals 4\r\n\r\n");
@@ -76,6 +81,10 @@ public class LinguagemDestino {
             System.out.println(e.getMessage());
             System.exit(1);
         }
+	}
+	
+	static String processaMacros(ListaMacros macros){
+		return macros.codigoDestino();
 	}
 	
 	/*static String processaListaComandos(LinkedList<TipoReferencia> lista){

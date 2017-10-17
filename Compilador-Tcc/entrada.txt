@@ -3,5 +3,3 @@ Title: capitalized$
 $
 type: Artigo$
 author,title$
-type: Book$
-author, title$

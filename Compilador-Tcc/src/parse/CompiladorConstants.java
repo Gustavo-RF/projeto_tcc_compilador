@@ -13,13 +13,13 @@ public interface CompiladorConstants {
   /** RegularExpression Id. */
   int TYPE = 5;
   /** RegularExpression Id. */
-  int MACRO = 6;
+  int ATRIB = 6;
   /** RegularExpression Id. */
-  int ATRIB = 7;
+  int TYPE_ESCOLHIDO = 7;
   /** RegularExpression Id. */
-  int TYPE_ESCOLHIDO = 8;
+  int DESCRITOR = 8;
   /** RegularExpression Id. */
-  int DESCRITOR = 9;
+  int DESCRITOR_MIN = 9;
   /** RegularExpression Id. */
   int VIRG = 10;
   /** RegularExpression Id. */
@@ -48,10 +48,10 @@ public interface CompiladorConstants {
     "\"\\t\"",
     "\"\\n\"",
     "\"type\"",
-    "\"macro\"",
     "\":\"",
     "\"Artigo\"",
     "<DESCRITOR>",
+    "<DESCRITOR_MIN>",
     "\",\"",
     "<PONTUACAO>",
     "\"lastName\"",

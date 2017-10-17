@@ -20,4 +20,9 @@ public class ListaTipos {
 	public void insere(Tipo tipo){
 		this.tipos.add(tipo);
 	}
+	
+	@Override
+	public String toString(){
+		return this.tipos.toString();
+	}
 }
