@@ -1,0 +1,120 @@
+/**
+ * JavaCC template file created by SF JavaCC plugin 1.5.28+ wizard for JavaCC 1.5.0+
+ */options  
+{
+    DEBUG_PARSER = false;
+    DEBUG_TOKEN_MANAGER = false;
+}PARSER_BEGIN(Compilador)
+
+package parse;
+import java.io.*;
+import java.util.LinkedList;
+import classes.*;
+import destino.*;
+public class Compilador{
+  public static LinkedList<TipoReferencia> macros;
+    public static void main(String args []) throws ParseException  {
+    try{		Compilador compilador = new Compilador(new FileInputStream("entrada.txt"));	    while (true)	    {	      	System.out.println("Reading from standard input...");
+	      	Compilador.macros = compilador.inicio();
+	      	System.out.println(macros.toString());
+	      	LinguagemDestino.geraCodigoDestino("saida");
+	      	break;	    }
+	}catch(FileNotFoundException e){
+        System.out.println("Erro: arquivo nao encontrado!\n");
+    }  }}PARSER_END(Compilador)SKIP :{  " "| "\r"| "\t"| "\n"}TOKEN :{
+  < TYPE : "type" >
+| < MACRO : "macro" >
+| < ATRIB : ":" >
+| < TYPE_ESCOLHIDO : "Artigo" >
+| < DESCRITOR : "Author"|"Title"|"Date"|"Place"|"Pontuation" >
+| < VIRG : "," >
+| < #PONTUACAO : ","|";"|":" >
+| < #LASTNAME : "lastName" >
+| < #UPPERCASE : "uppercase" >
+| < #CAPITALIZED : "capitalized" >
+| < #DATA : "dd/mm/yyyy" >
+| < PROP : < LASTNAME >|< UPPERCASE >|< CAPITALIZED >|< DATA >|< PONTUACAO > >
+| < ENDLINE : "$" >}
+
+LinkedList<TipoReferencia> inicio(): { 	LinkedList<TipoReferencia> listaTipos = new LinkedList<TipoReferencia>();
+								ListaLinhas listaLinhas = new ListaLinhas();Token nome = null;}
+{
+  	(
+  	  	< MACRO > < ATRIB >
+  	  	nome = < TYPE_ESCOLHIDO >
+  	  	< ENDLINE >
+  	  	listaLinhas = linha()
+  	  	{
+  	  	  
+  	  	  TipoReferencia tipo = new TipoReferencia(nome.image,listaLinhas);
+  	  	  listaTipos.add(tipo);
+  	  	}
+  	)+
+  	(
+  	  macro = macros()
+  	  {
+  	    listaMacros.insere(macro);
+  	  }  	)+
+  	< ENDLINE >
+  	(
+  	  < TYPE > < ATRIB > < TYPE_ESCOLHIDO > < ENDLINE >
+  	  < PROP > (< VIRG > < PROP >)*  	)+
+  	< EOF >
+  	{ return listaTipos; }}
+
+Macro macros(): {Macro macros = new Macro();Token nome = null;Token prop = null;}
+{
+	nome = < MACRO >
+	{
+	  	macros.setNome(nome.image);
+	}
+	< ATRIB >
+	prop = < PROP >
+	{
+	  	macros.insere(prop.image);
+	}
+	(
+	  	< VIRG >
+		prop = < PROP >
+		{
+		  macros.insere(prop.image);
+		}
+	)*
+	{
+	  return macros;
+	}
+}
+
+ListaLinhas linha(): { ListaLinhas linha = new ListaLinhas(); Token elemento = null; Linha linhaAux = new Linha();}
+{	(
+		elemento = < DESCRITOR >
+		{
+		  linhaAux = new Linha();
+		  linhaAux.insere(elemento.image);
+		  
+		}
+		<ATRIB >
+		elemento = < PROP >
+		{
+		 
+		  linhaAux.insere(elemento.image);
+		  
+		}
+		(
+		  	< VIRG >
+		  	elemento = < PROP >
+			{
+			  
+			  linhaAux.insere(elemento.image);
+			  
+			}
+		)*
+		{
+		  linha.insere(linhaAux);
+		}
+		< ENDLINE >
+	)+
+	{
+	  return linha;
+	}
+}
