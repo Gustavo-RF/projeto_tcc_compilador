@@ -84,10 +84,5 @@ public class Macro {
 		  "</macro>";
 		}
 		else return "";
-		/*Iterator<String> i = this.props.iterator(); //cria um objeto Iterator da sua LinkedList
-		  while (i.hasNext()) { //percorrer toda a lista até o ultimo elemento
-		  System.out.println(i.next()); //Mostra o valor da Lista
-		}
-		return "";*/
 	}
 }

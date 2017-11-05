@@ -3,14 +3,9 @@ package destino;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.Iterator;
-import java.util.LinkedList;
 
-import classes.Macro;
+import classes.ListaMacros;
 import parse.Compilador;
-import classes.*;
-
-import parse.*;
 
 public class LinguagemDestino {
 	
@@ -69,10 +64,6 @@ public class LinguagemDestino {
             //Tipos
             arqSaida.write("</bibliography>\r\n");
             arqSaida.write("</style>\r\n");
-            /*arqSaida.write(".limit locals 4\r\n\r\n");
-            arqSaida.write(processaListaComandos(Compilador.tipos));
-            arqSaida.write("return\r\n");
-            arqSaida.write(".end method\r\n");*/
             arqSaida.close();
 		}catch(IOException e){
 			System.out.println("Problemas na geracao do codigo destino");
@@ -86,13 +77,4 @@ public class LinguagemDestino {
 	static String processaMacros(ListaMacros macros){
 		return macros.codigoDestino();
 	}
-	
-	/*static String processaListaComandos(LinkedList<TipoReferencia> lista){
-        String saida ="";
-    	for(ListaLinhas l: lista.getLinhas()){
-        	//saida += l.geraCodigoDestino();
-    	}	
-    	return saida;
-    }*/
-
 }
